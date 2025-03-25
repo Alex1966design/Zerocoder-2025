@@ -98,6 +98,27 @@ def send_message(chat_id, text):
             "text": text
         }
         requests.post(url, json=payload)
+data = request.get_json()
+print("Получено сообщение:", data)
+
+if 'message' in data:
+    chat_id = data['message']['chat']['id']
+    text = data['message'].get('text', '')
+    reply = f"Вы написали: {text}"
+    send_message(chat_id, reply)
+@app.route('/', methods=['POST'])  # ← ЭТО маршрут для Telegram Webhook
+def webhook():
+    data = request.get_json()
+    print("Получено сообщение:", data)
+
+    if 'message' in data:
+        chat_id = data['message']['chat']['id']
+        text = data['message'].get('text', '')
+
+        reply = f"Вы написали: {text}"
+        send_message(chat_id, reply)
+
+    return {"ok": True}
 
 
 
